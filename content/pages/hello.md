@@ -1,6 +1,6 @@
 +++
 date = "2016-06-25T19:11:37+06:00"
-title = "def hello, do:"
+title = "This"
 menu = "main"
 +++
 After admiring Elixir from a distance for a while, I'm finally learning it.

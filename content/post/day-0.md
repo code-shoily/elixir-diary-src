@@ -30,11 +30,11 @@ Any Vim user will know the value of exit command. `CTRL+C` does it for Elixir sh
 
 Identifiers in Elixir
 
-    + You can assign variables in Elixir. `number = 42` works, just as `country = "Bangladesh"` does. No `let`, `var`, `val` etc.
-    + `f = 0.5` works but `f = .5` doesn't. There has to be something on the right side of `.`.
-    + `PI = 3.1416` didn't work no matter what I tried. Variables shouldn't have the first letter capitalized [_why?_]
-    + Atoms start with a colon (i.e. `:helloworld`)
-    + I can use names like `integer?` or `map?` as identifiers. Yay! 
++ You can assign variables in Elixir. `number = 42` works, just as `country = "Bangladesh"` does. No `let`, `var`, `val` etc.
++ `f = 0.5` works but `f = .5` doesn't. There has to be something on the right side of `.`.
++ `PI = 3.1416` didn't work no matter what I tried. Variables shouldn't have the first letter capitalized [_why?_]
++ Atoms start with a colon (i.e. `:helloworld`)
++ I can use names like `integer?` or `map?` as identifiers. Yay! 
 
 #### Functions
 Erlang is a functional programming language. So it's only natural that I treat this at first. Now, how do I write a function in Elixir? 
