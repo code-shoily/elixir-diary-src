@@ -24,17 +24,179 @@ Anyway, one of the things we Pythonistas are used to is the `help()` and `dir()`
 Any Vim user will know the value of exit command. `CTRL+C` does it for Elixir shell. That's exit!
 
 
-### Exploration and Findings
+### Exploration
+This is where I fire up the REPL and start playing with it. The first thing I need to see is how I get to assign stuff. That's easy, just do a `variable_name = value`. No `let`, `var`, `val` etc. Since Elixir is a functional programming language, the first thing I'd look for is, well, functions? Let's see,
 
-#### Identifiers
+```elixir
+odd? = fn(n) -> rem(n, 2) == 1 end
+even? = fn n -> not odd?.(n)
 
-Identifiers in Elixir
+IO.puts odd?.(11) #=> true
+IO.puts even?.(11) #=> false
+```
 
-+ You can assign variables in Elixir. `number = 42` works, just as `country = "Bangladesh"` does. No `let`, `var`, `val` etc.
-+ `f = 0.5` works but `f = .5` doesn't. There has to be something on the right side of `.`.
-+ `PI = 3.1416` didn't work no matter what I tried. Variables shouldn't have the first letter capitalized [_why?_]
-+ Atoms start with a colon (i.e. `:helloworld`)
-+ I can use names like `integer?` or `map?` as identifiers. Yay! 
+Despite knowing it, I did end up calling the function as `odd?(11)`. It seems that Elixir anonymous functions need a `.()` for the arguments to be applied. True and False are just true/false. There's a convenient shortcut for it too:
 
-#### Functions
-Erlang is a functional programming language. So it's only natural that I treat this at first. Now, how do I write a function in Elixir? 
+```elixir
+odd? = &(rem(&1, 2) == 1)
+event? = &(not odd?.(&1))
+```
+
+Sort of like Clojure's `#(odd? %1)`. Convenient. But how do I make stuff that I can call without the parenthesis? That's where modules come in:
+
+```elixir
+defmodule OddEven do
+    def odd? n do
+        rem(n, 2) == 1
+    end
+
+    def even? n do
+        not odd? n
+    end
+end
+```
+
+Oh, comments begin `# with a hash`
+
+It is a common syntax pattern of Elixir to have constructs like `<something> <expression> do <body> end` it seems. Let's take a look at `if`:
+
+```elixir
+defmodule LeapYear do
+    def leap_year? year do
+        if rem(n, 400) == 0 do
+            return true
+        end
+        if rem(n, 100) == 0 do
+            return false
+        end
+        if rem(n, 4) == 0 do
+            return true
+        end
+
+        false
+    end
+end
+```
+
+See what I mean? But Elixir is heavily pattern-happy language, so there's another way of doing it:
+
+```elixir
+defmodule LeapYear do
+    def leap_year?(year) when rem(year, 400) == 0 do
+        true
+    end
+    def leap_year?(year) when rem(year, 100) == 0 do
+        false
+    end
+    def leap_year?(year) when rem(year, 4) == 0 do
+        true
+    end
+    def leap_year? year do
+        false
+    end
+end
+```
+
+It's like those piecewise defined functions we did in school.
+
+We covered `conditions`, let's cover `loops`. I didn't see any C-style `for` equivalent yet. And I'm not supposed to since Elixir doesn't mutate things. Instead I get recursion:
+
+```elixir
+defmodule Fibonacci do
+    def compute n do
+        if n <= 1 do
+            n
+        else
+            compute(n - 1) + compute(n - 2)
+        end 
+    end
+
+    def range n do
+        for i <- 1..n do
+            compute(i)
+        end
+    end
+end
+```
+
+So we have a `foreach`-ish construct here. It's called comprehension and is better viewed as `for i <- <range> do: ...`. The `something do body end`-s have a short form of `something, do: ...` it seems. And instead of the `if` as base case in `compute`, could we instead use that piecewise defined thingy?
+
+```elixir
+defmodule Fibonacci do
+    def compute(n) when n <= 1 do
+        n
+    end
+
+    def compute(n) do
+        compute(n - 1) + compute(n - 2)
+    end
+
+    def range(n) do
+        for i <- 1..n, do: compute i
+    end
+end
+```
+
+An interesting thing about the for comprehension is that, you can put conditions in the comma separated values, or multiple iterations too, take for example, this one:
+
+```elixir
+# Can you tell me what this yields?
+triplets = for a <- 1..10, b <- 1..10, c <- 1..10, c*c = a*a + b*b, do: {a, b, c}
+```
+
+This brings us to the composite types. It's safe to assume that List and Map types would exist. And there's a Tuple too.
+
+```elixir
+# Lists
+lost_numbers = [4, 8, 15, 16, 23, 42]
+Enum.at(lost_numbers, 0) #=> 4
+Enum.map(lost_numbers, fn n -> n*n end) #=> Square each of lost numbers
+Enum.reduce(lost_numbers, &(&1 + &2)) #=> Find the sum of lost numbers
+42 in lost_numbers #=> true
+
+# MAPS
+lost_candidates = %{
+    4 => "Locke",
+    8 => "Hugo",
+    15 => "Sawyer",
+    16 => "Sayid",
+    23 => "Jack",
+    42 => "Kwon",
+}
+
+Dict.keys(lost_candidates) == lost_numbers #=> true
+Dict.values(lost_candidates) #=> ["Locke", "Hugo", "Sawyer", "Sayid", "Jack", "Kwon"]
+Dict.put(lost_candidates, 47, "Mafinar") #=> Returns a new Dict with me with number 47
+Dict.get(lost_candidates, 4) #=> "Locke"
+lost_candidates[23] #=> "Jack"
+```
+
+Seems to me that Elixir calls module functions a lot. It's not `lost_candidates.keys` but `Dict.keys lost_candidates`, not `lost_numbers.at(0)` but `Enum.at lost_numbers, 0`. The first argument being lost_numbers can have an important impact:
+
+```elixir
+# Square the lost_numbers, then find the odd ones, then spit out the product.
+square = fn n -> n*n end
+odd? = fn n -> rem(n, 2) == 1 end
+product = fn a, b -> a * b end
+
+Enum.reduce(Enum.filter(Enum.map(lost_numbers, square), odd?), product)
+```
+
+So, the `map` gives out the square numbers, and feeds it as the first argument to the `filter`, which in turns spits the odd numbers and becomes the first argument of the `reduce` function. Instead, why not do a pipe?
+
+```elixir
+square = fn n -> n*n end
+odd? = fn n -> rem(n, 2) == 1 end
+product = fn a, b -> a * b end
+
+lost_numbers |> Enum.map(square) |> Enum.filter(odd?) |> Enum.reduce(product)
+```
+
+I have always loved Clojure's threading macros. Looks like Elixir has one too. And it looks awesome with Firacode ligatures!
+
+I must admit, I was a little baffled with some of the Map examples I saw, `%{ 2 => "Two"}` works but `%{2: "Two"}` spits out an error. And what's with this `[:x 25, :y 30]` thingy? Looks like I need to inspect the APIs better and get a good understanding of Atoms and Tuples.
+
+## Okay then...
+This was just random scribbles on my part, hence the day 0 bit. I just wanted to do a quick run down on Elixir and see how things fall and write-up whatever came out. And I must say, Elixir seems to have potential of being a super fun language. So far, it seemed braing and sanity friendly to me. And I find the code beautiful too. I'm glad I took it.
+
+I am tired right now. That's all exploration for me that I'd write about. I'll just go and explore more on my own and share it tomorrow?
