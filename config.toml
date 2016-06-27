@@ -1,0 +1,39 @@
+baseurl = "http://elixir-diary.mafinar.com/"
+languageCode = "en-us"
+title = "My Elixir Diary"
+theme = "hugo-steam-theme"
+disqusShortname = "codeshoily"
+paginate = 5
+canonifyurls = false
+
+[params]
+
+	title = "My Elixir Diary"
+	subtitle = "Learning as I write this..."
+	copyright = "Zero Rights Reserved"
+
+	# You can choose between green, orange, red and blue.
+	themeColor = "darkblue"
+	# Enable Google Analytics be inserting your tracking code
+	googleAnalytics = ""
+
+	# To provide some metadata for search engines and the about section in the footer
+	# feel free to add a few information about you and your website.
+	name = "Mafinar Khan"
+	bio = "Father. Coder. Foodie."
+	description = "Learning as I write this."
+	location = "Dhaka, Bangladesh" # optional
+	twitter = "mafinar" # optional
+	github = "code-shoily" # optional
+
+	# Enable a comment system
+	# You can choose between Disqus or Google Plus by setting comments
+	# to disqus or googleplus. For using Disqus you need to enter your
+	# shortname in disqusShortname at the top of the configs. 
+	comments = "disqus"
+
+	# Customize or translate the strings
+	keepReadingStr = "More"
+	backtotopStr = "Back to top"
+	shareStr = "Share"
+	pageNotFoundTitle = "404 - Page not found"
