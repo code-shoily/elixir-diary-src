@@ -1,10 +1,20 @@
 baseurl = "http://elixir-diary.mafinar.com/"
+<<<<<<< HEAD
+=======
+contentdir = "content"
+layoutdir = "layouts"
+publishdir = "public"
+>>>>>>> fcce313fe6b1fdcbd1023355445a0c8b21967520
 languageCode = "en-us"
 title = "My Elixir Diary"
 theme = "hugo-steam-theme"
 disqusShortname = "codeshoily"
 paginate = 5
+<<<<<<< HEAD
 canonifyurls = false
+=======
+canonifyurls = true
+>>>>>>> fcce313fe6b1fdcbd1023355445a0c8b21967520
 
 [params]
 
