@@ -1,4 +1,4 @@
-baseurl = "http://elixir-diary.mafinar.com/"
+baseurl = "https://code-shoily.github.io/my-elixir-diary/"
 languageCode = "en-us"
 title = "My Elixir Diary"
 theme = "hugo-finsteam-theme"
