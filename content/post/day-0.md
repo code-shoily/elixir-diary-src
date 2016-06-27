@@ -1,6 +1,6 @@
 +++
 author = "Mafinar Khan"
-date = "2016-06-27T19:29:32+06:00"
+date = "2016-06-27T10:29:32+06:00"
 title = "Day 0 - Unboxing and Exploration"
 linktitle = "Day 0 - Unboxing and Exploration"
 weight = 10
