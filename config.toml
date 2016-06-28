@@ -14,7 +14,7 @@ paginate = 5
 	# You can choose between green, orange, red and blue.
 	themeColor = "darkblue"
 	# Enable Google Analytics be inserting your tracking code
-	googleAnalytics = ""
+	googleAnalytics = "UA-80011210-1"
 
 	# To provide some metadata for search engines and the about section in the footer
 	# feel free to add a few information about you and your website.
@@ -32,7 +32,7 @@ paginate = 5
 	comments = "disqus"
 
 	# Customize or translate the strings
-	keepReadingStr = "More"
+	keepReadingStr = "Continue Reading"
 	backtotopStr = "Back to top"
 	shareStr = "Share"
 	pageNotFoundTitle = "404 - Page not found"
