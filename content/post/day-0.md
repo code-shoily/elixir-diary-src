@@ -3,6 +3,10 @@ author = "Mafinar Khan"
 date = "2016-06-27T10:29:32+06:00"
 title = "Day 0 - Unboxing and Exploration"
 linktitle = "Day 0 - Unboxing and Exploration"
+tags = [
+    "scribble",
+    "repl",
+]
 weight = 10
 description = "Let's install this thing and do some explorations. This is a totally random, unplanned, whatever-may-come-into-your-mind post where I just query syntactic constructs and map it with Elixir's. Going to be full of misinformations and bloopers, I assume"
 +++
@@ -34,7 +38,7 @@ This is where I fire up the shell and start playing. The first thing I need to s
 
 ```elixir
 odd? = fn(n) -> rem(n, 2) == 1 end
-even? = fn n -> not odd?.(n)
+even? = fn n -> not odd?.(n) end
 
 IO.puts odd?.(11) #=> true
 IO.puts even?.(11) #=> false
