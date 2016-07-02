@@ -13,27 +13,28 @@ weight = 10
 description = "I did enough exploration the past few days and it's time I clean slate and proceed as someone learning Elixir. Not a Python programmer trying to translate Python idioms into Elixir or a Clojure programmer's view of the language, but starting with a clean slate and learning from zero."
 +++
 
-I did enough exploration the past few days and it's time I clean slate and proceed as someone learning Elixir. Not a Python programmer trying to translate Python idioms into Elixir or a Clojure programmer's view of the language, but starting with a clean slate and learning from zero. It is not an easy thing to do. Most of the time I would feel the urge to skip a paragraph of the documentation with the assumption that "I already know". I don't. My exposure to Elixir is that of a pre-noob's and I should act like it.
+I did enough explorations the past few days and it's time I emptied my cup and proceeded as a total newcomer to the language. Not a Python programmer trying to translate Python idioms into Elixir nor a Clojure programmer checking the language out, but starting with a clean slate and learning from zero. It is not an easy thing to do. Most of the time I would fight the urge to skip a line of the documentation with the assumption that "I already know". I don't. My exposure to Elixir is that of a pre-noob's and I should act like it.
 
-Although it's entitled *"Day 1"*, I had spent the past few days reading through the documentation and browsing through some source codes, I needed to get a feel for the language before I started documenting my experiences with it. While from a distance, Elixir seemed to have a familiar face but in reality, the way it makes you think and the way the codes become art is quite different from others. The same is true for Python, or Golang, or Clojure. Every language boasts their own personality and it is important that their coders respect that. Writing Fortran in any language never did any good.
+Although it's entitled *"Day 1"*, I had spent the past 2/3 days reading through the documentation and browsing through some source codes and snippets, I needed to get a feel for the language before I started documenting my experiences with it. While from a distance, Elixir seemed to have a familiar face but in reality, the way it makes you think and the way your code becomes art through it is quite different. The same is true for Python, or Golang, or Clojure. Every language boasts their own personality and it is important that their coders respect that. Writing Fortran in any language never did any good.
 
 So, assuming zero knowledge of the language, I proceed with the rest of my days with Elixir.
 
 ## Running a File
+
 How do I run a file? I know `iex` is the magical shell that let's me insta-code, but what if I want to write a program, a script of sorts with Elixir? Easy, I write a `.exs` file and do an `elixir <my_file_name>.exs`. 
 
 ```elixir
 # hello_world.exs
 defmodule HelloWorld do
-    def run do
+    def play do
         IO.puts "Hello World"
     end
 end
 
-HelloWorld.run
+HelloWorld.play
 ```
 
-There you go, my first super sophisticated Elixir program. A quick `elixir hello_world.exs` printed the legendary "Hello World" to my console. I could go to the shell and type `c("hello_world.exs")` and enable it for a `HelloWorld.run` too if I want.
+There you go, my first super sophisticated Elixir program. A quick `elixir hello_world.exs` printed the legendary "Hello World" to my console. I could go to the `iex` and type `c("hello_world.exs")` and enable it for a `HelloWorld.run` too if I want.
 
 What if I am in the shell, compiled the code and then I change it and want to see the results? Just make the `c` call again. 
 
@@ -54,6 +55,7 @@ end
 ```
 
 #### Default Arguments
+
 We can add more functions to the module, for instance, the ability to compute the area of a rectangle, given `height` and `width`:
 
 ```elixir
@@ -68,11 +70,11 @@ defmodule Area do
 end
 ```
 
-What were those `\\ 0` about? That's how Elixir shows default arguments. `height \\ 0` and `width \\ 0` meant that if any of those parameters were missing during function call, they'd be replaced with `0`s. I think I will typo `//` instead of `\\` a lot.
+What were those `\\ 0` about? That's how Elixir shows default arguments. `height \\ 0` and `width \\ 0` meant that if any of those parameters were missing during the function call, they'd be replaced with `0`s. I think I will typo `//` instead of `\\` a lot.
 
 #### Match Operator
 
-The `=` in Elixir is called a *match operator*. It doesn't seem like other `=`-s in a sense that it doesn't assign anything to a variable, it matches, and binds the right hand side expression with the left hand side ones. 
+The `=` in Elixir is called the *match operator*. It doesn't seem like other languages' `=`-s in a sense that it doesn't assign anything to a variable, it matches, and binds the right hand side expression with the left hand side one. 
 
 ```elixir
 x = 1 # We all know what happens here
@@ -83,11 +85,11 @@ x = 2 # `x` now refers to someone else
 
 ## Error Handling
 
-I always be sure to familiar myself with error messages of a programing language. `2 = x` yielded no error but `3 = x` did spit up a `MatchError`, so naturally, so should `3 = z`, as `z` doesn't exist to be matched in the first place. However, this will yield a completely different error- the `CompileError`. It's because the compiler expect the right hand side to be an expression which the left hand side will match with. `x` is an expression, it didn't match with `3`. `z` isn't, so it took it for a function (it looks like a no-args function since parentheses are optional in Elixir), so the error message is, `undefined function, z/0`.
+I always make sure I familiar myself with error messages of a programing language. `2 = x` yielded no error but `3 = x` did spit up a `MatchError` and naturally, so should `3 = z`, as `z` doesn't exist to be matched in the first place. However, this will yield a completely different error- the `CompileError`. It's because the compiler expect the right hand side to be an expression which the left hand side will match with. `x` is an expression, it didn't match with `3`. `z` isn't, so it took it for a function (it looks like a no-args function since parentheses are optional in Elixir), so the error message is, `undefined function, z/0`.
 
 #### try ... rescue and after
 
-This brings us to exception handling. I know it's too early to be handling exceptions but well, I dive in there early. Let's start with everybody's favorite example:
+This brings us to exception handling. I know it's too early to be handling exceptions but well, I had dived in there early for all but my first and second languages. Let's start with everybody's favorite example:
 
 ```elixir
 # Let's 1/0 and see what the error is called, ArithmeticError eh?
@@ -112,12 +114,12 @@ end
 >
 > **Answer** That's Elixir string concatenation operator. (I felt kinda weird to me at first)
 
-When we either run the script or call `BadMath.play` from `iex` we get the error message and the ~~finally~~ `after` message. So I guess we can tell that `after` puts a piece of code that gets executed regardless whether you made an error or not.
+When we either run the script or call `BadMath.play` from `iex` we get the error message and the ~~finally~~ `after` message. So I guess we can tell that `after` puts a piece of code that gets executed regardless whether we made an error or not.
 
-How do you ~~throw~~ `raise` an exception? The `raise` macro, of course. Just put `raise` with the ErrorName as the first argument and message as the second. Call it in `try`-s scope and it'll ~~catch~~ `rescue` it.
+How do you ~~throw~~ `raise` an exception? The `raise` macro, of course. Just put `raise` with the ErrorName as the first argument and message as the second. Call it from within `try`-s scope and it'll ~~catch~~ `rescue` it.
 
 #### throw and catch
-Speaking of striking out things, looks like Elixir has `throw` and `catch` as well (See what I mean by starting with _No knowlege at all?_). `throw` is *not* like `raise`. It just does it's namesake, takes a value, and throws it into the `catch`ers pitch, anything that is thrown gets handled. Like the following:
+~~Speaking of striking out things,~~ looks like Elixir has `throw` and `catch` as well (See what I mean by starting with _No knowlege at all?_). `throw` is *not* like `raise`. It just does it's namesake, takes a value, and throws it into the `catch`ers pitch, anything that is thrown gets handled. Like the following:
 
 ```elixir
 tct = fn a,b ->
@@ -157,6 +159,7 @@ defmodule BadMath do
     end
 end
 ```
+
 So a named function can be an implicit `try` too.
 
 #### Summary
@@ -168,21 +171,21 @@ Here's the takeaway:
 * The `catch` clause deals with stuff that `try` threw at it via the `throw` function. It too, has it's own set of pattern against which the thrown value is matched with, it is better for the patterns to be exhaustive here. 
 * The difference between `raise` and `catch` is that `raise` is activated when an error occures, it knows the `error` and its `message`. `catch` on the other hand is activated when something is `throw`n at it. It can be *any* value the author chooses it to be. And the value will be matched against a series of pattern, just like the `rescue` clause.
 * Named functions can act as an *implicit* try. If the whole body of the function is to be probed for error, then the try wouldn't be required.
-* `after` takes place regardless of whether the error was made
+* `after` takes place regardless of whether error was made
 * `else` takes place when no errors were raised or values were thrown. It also matches the value with a series of patterns just like `raise` and `catch`, it just takes on the good guys. (I had forgotten about it earlier and am too lazy to be showing an example now :()
 
 
 ## Patterns and Guards
 
-Now, let's focus on the patterns we were talking about earlier. Patterns are one of the coolest things I liked about Elixir. It is actually quite simple, just take two parts, the left one will contain variables to be bound, wrapped in a pattern while the right side will be expression. Now, mentally superimpose the left on top of right. If they make one-to-one match, then you got your variables bound.
+Now, let's focus on the patterns we were talking about earlier. Patterns are one of the coolest things I liked about Elixir. It is actually quite simple, just take two parts, the left one will contain variables to be bound, wrapped in its data structure while the right side will be an expression. Now, mentally superimpose the right part on top of the left. If they make a complete one-to-one match (including the data structure), then you got your variables bound.
 
 Let's take an example here, `[1, 2, 3]` is a list, right? And what of `[x, y, z]`? A list too. But whether or not you will be slapped with a `CompilerError` or not is totally upto the context and declaration conditions of the variables. Now, what happens if you place `[1, 2, 3]` on top of `[x, y, z]`? You see, `1` will sit on top of `x`, `2` on `y`, and `3` on `z`. Bring the match operator in the mix and you have `[x, y, z] = [1, 2, 3]` binding `x`, `y`, and `z`, to `1`, `2`, and `3`. However, if we place `{x, y, z} = [1, 2, 3]` they won't really match, `{` will reject the `[` and we get our favorite `MatchError`, and neither would `[1, x] = [2, 6]` because 1 ain't 2. The pattern has to match completely. 
 
 > **Question** What one earth is a `{1, 2, 3}`?
 > 
-> **Answer** They're `tuples`. They are like `Lists`, but with different agenda and performance profile. Use them when you have a fixed number of elements. I'm sure I'll talk about them in a day or two. Moving on...
+> **Answer** They're `tuples`. They are like `Lists`, but with different agenda and performance profile. Use them when you have a fixed number of elements. I'm sure I'll talk about them in a day or two.
 
-So, let's do some pattern matching from whatever we know:
+So, let's do some pattern matchings based on whatever we know:
 
 ```elixir
 [a, 2, [c, d], 5] = [1, 2, [3, 4], 5]
@@ -201,21 +204,21 @@ So, let's do some pattern matching from whatever we know:
 #:circle ain't :square... MatchError!!!
 ```
 
-As I'm sure I've mentioned in *Day-0*, `%{x: 0, y: 0}` refers to a `Map`. A special case of it too because in here, keys are `Atom`s. If no keys were `Atom`s, we'd do a `%{"x" => 0, "y" => 0}` instead.
+As I've mentioned in *Day-0*, `%{x: 0, y: 0}` refers to a `Map`. A special case of it too because in here, keys are atoms. If no keys were atoms, we'd do a `%{"x" => 0, "y" => 0}` instead.
 
 
 #### Lists, Maps, Tuples
 
 I have briefly mentioned `List`, `Tuple` and `Map` without talking about it much, I know I will some day but here are some quickies:
 
-* `Atom`s are like constants where their name and value are the same.
+* `Atom`s are like constants where their names and values are the same.
 * `List`s can be written in the form `[1, 2, 3]`. However, they are recursively constructed. For example, `[0 | []]` is `[0,1]`, `[0 | [1 | []]]` is `[0, 1]` and so on. This construction is of the form `[h|t]` where `h` refers to the first element and `t` refers to the rest. This can be used as a pattern too.
 * `Map`s are written like `%{"a" => 10, "b" => 20}` but if all of its keys are atoms, then it can be of the type `%{a: 10, b: 20}`. Normally, maps are accessed via the indexing operator but in case of keyword maps, `.` operator can be used. `m = %{x: 0, y: 0}` can be accessed like either `m[:a]` or `m.a`. For keyword maps only.
 * A `List` whose elements are all tuples of two elements and the first of whom are atoms, then they are called keywords and have a special sugar as well. `[{:a, 2}, {:b, 3}]` can also be written as `[a: 2, b: 3]` and queried like `lst[:a]`.
 
 #### Functions and Patterns
 
-Back to patterns. And here's something interesting, function arguments are pattern-ready. Which means, if we define a function definition like `def f(0, 1, x)` and put `0, 1, 2` as the actual parameter, then the function will be activated and `x` will be bound with `2`. This eliminates a lot of conditions and logics and makes the program look declarative. Modules match all its definitions of the functions from top to bottom and gives out the first match. Here's an example:
+Back to patterns. And here's something interesting, function arguments are pattern-ready. Which means if we define a function definition like `def f(0, 1, x)` and put `0, 1, 2` as the actual parameters, then the function will be activated and `x` will be bound with `2`. This eliminates a lot of conditions and logics and makes the programs look declarative. Modules match all definitions of the functions from top to bottom and activates the first match. Here's an example:
 
 ```elixir
 defmodule BadMath do
@@ -224,7 +227,7 @@ defmodule BadMath do
 end
 ```
 
-In the snippet above, when we call `BadMath.factorial(4)`, then it first matches with `factorial(0)` signature, it doesn't find it, so it matches the second one. This stops when `n` is finally 0 due to the decrements and first one (non-recursive) is matched.
+In the snippet above, when we call `BadMath.factorial(4)`, then it first matches with `factorial(0)` signature, it doesn't find it, so it matches the second one. This stops when `n` is finally `0` due to the decrements and first one (non-recursive) is matched.
 
 Here's one with the head rest pattern.
 
@@ -261,7 +264,7 @@ end
 
 Then there are guards. Guards are basically the `when` clauses that were mentioned in the `Exception` zone.
 
-Guards guard the patterns, it starts with `when` and is followed by a condition expression. Functions can be called too but the functions guards allow is very limited and user-custom functions cannot be used.
+Guards guard their patterns, a guard starts with `when` and is followed by a condition expression. Boolean functions can be called too but predicates that guards allow are very few in number and user-custom functions cannot be used.
 
 ```elixir
 defmodule Grade do
@@ -288,7 +291,7 @@ end
 
 See when we call the function above, the `:wrong` never appears. This is because when we assign an impossible value like `-10` or `110`, then they get matched with the top two clauses, hence the last clause is never met. We should either put the final clause on top, or add a high/low value checking bound in the `when` clauses. 
 
-Similar is `cond` macro. Instead of taking a value and matching a set of patterns, it dictates a set of conditions and expression that's associated with them.
+Similar is `cond` macro. Instead of taking a value and matching a set of patterns, it dictates a set of conditions and expression that is associated with them.
 
 ```elixir
 pass_or_fail = fn marks ->
@@ -302,8 +305,10 @@ end
 
 That's with the guards. There are a few things though:
 
-* Guards know limited functions. Not all functions can be used in guards, no matter how boolean they are. 
-* Guards don't throw exceptions. I had understood it the hard way. The following piece of code, for example:
+Firstly, Guards know limited functions. Not all functions can be used in guards, no matter how boolean they are. 
+
+Guards don't throw exceptions. I had understood it the hard way. The following piece of code, for example:
+
 ```elixir
 defmodule WeirdMath do
     def division_even(a, 0), do: raise ArithmeticError, "Division by zero"
@@ -311,13 +316,14 @@ defmodule WeirdMath do
     def division_even(a, b) when rem(a/b, 2) == 0, do: true
 end
 ```
+
 When I call `WeirdMath.division_even(10, 2)` it sends me a `FunctionClauseError`, saying, there's no function clause that matches it. Then when I separately do a `rem(10, 2)` then I get an `ArithmeticError` that tells me I have bad argument in my expression. This didn't get handled in the guard.
 
 Now, if we go back to the error handling section, we would have an easier time understanding it and be more creative while handling errors. 
 
 ## PHEW
 
-That was a long post. And a fun one too. There's this one thing though, I made a mistake when writing my `BadMath.factorial/1` function and when I was calling it with `iex`, it froze my entire system. I didn't save the stuff I was writing at the time, so lost a lot of words.
+That was a long post. And a fun one too. I will be writing on data structures tomorrow. It's holiday season here so I'll be able to write more.
 
 > **Question** What's this `macro` you talk about?
 > 
