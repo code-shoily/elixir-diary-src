@@ -1,8 +1,8 @@
 +++
 date = "2016-07-02T01:54:13+06:00"
 author = "Mafinar Khan"
-title = "Day 1 - Tabula Rasa"
-linktitle = "Day 1 - Tabula Rasa"
+title = "Day 1 - Tabula Rasa: Patterns and Errors"
+linktitle = "Day 1 - Tabula Rasa: Patterns and Erros"
 tags = [
     "basic",
     "error-handling",
@@ -19,6 +19,7 @@ Although it's entitled *"Day 1"*, I had spent the past few days reading through 
 
 So, assuming zero knowledge of the language, I proceed with the rest of my days with Elixir.
 
+## Running a File
 How do I run a file? I know `iex` is the magical shell that let's me insta-code, but what if I want to write a program, a script of sorts with Elixir? Easy, I write a `.exs` file and do an `elixir <my_file_name>.exs`. 
 
 ```elixir
@@ -36,6 +37,8 @@ There you go, my first super sophisticated Elixir program. A quick `elixir hello
 
 What if I am in the shell, compiled the code and then I change it and want to see the results? Just make the `c` call again. 
 
+## A little on Modules
+
 *Modules* in Elixir contain functions. There are anonymous functions which are of the `fn(<arg1>,<arg2>...) -> <body> end` syntax and can be bound with a var, but for the named functions to exist, they have to reside under a module. 
 
 ```elixir
@@ -50,6 +53,7 @@ defmodule Area do
 end
 ```
 
+#### Default Arguments
 We can add more functions to the module, for instance, the ability to compute the area of a rectangle, given `height` and `width`:
 
 ```elixir
@@ -66,6 +70,8 @@ end
 
 What were those `\\ 0` about? That's how Elixir shows default arguments. `height \\ 0` and `width \\ 0` meant that if any of those parameters were missing during function call, they'd be replaced with `0`s. I think I will typo `//` instead of `\\` a lot.
 
+#### Match Operator
+
 The `=` in Elixir is called a *match operator*. It doesn't seem like other `=`-s in a sense that it doesn't assign anything to a variable, it matches, and binds the right hand side expression with the left hand side ones. 
 
 ```elixir
@@ -75,7 +81,11 @@ x = 2 # `x` now refers to someone else
 2 = x # There it is, RHS matches with LHS, so it works!
 ```
 
+## Error Handling
+
 I always be sure to familiar myself with error messages of a programing language. `2 = x` yielded no error but `3 = x` did spit up a `MatchError`, so naturally, so should `3 = z`, as `z` doesn't exist to be matched in the first place. However, this will yield a completely different error- the `CompileError`. It's because the compiler expect the right hand side to be an expression which the left hand side will match with. `x` is an expression, it didn't match with `3`. `z` isn't, so it took it for a function (it looks like a no-args function since parentheses are optional in Elixir), so the error message is, `undefined function, z/0`.
+
+#### try ... rescue and after
 
 This brings us to exception handling. I know it's too early to be handling exceptions but well, I dive in there early. Let's start with everybody's favorite example:
 
@@ -98,14 +108,15 @@ defmodule BadMath do
 end
 ```
 
-**Question** What does the `<>` operator do?
-
-**Answer** That's Elixir string concatenation operator. (I felt kinda weird to me at first)
+> **Question** What does the `<>` operator do?
+>
+> **Answer** That's Elixir string concatenation operator. (I felt kinda weird to me at first)
 
 When we either run the script or call `BadMath.play` from `iex` we get the error message and the ~~finally~~ `after` message. So I guess we can tell that `after` puts a piece of code that gets executed regardless whether you made an error or not.
 
 How do you ~~throw~~ `raise` an exception? The `raise` macro, of course. Just put `raise` with the ErrorName as the first argument and message as the second. Call it in `try`-s scope and it'll ~~catch~~ `rescue` it.
 
+#### throw and catch
 Speaking of striking out things, looks like Elixir has `throw` and `catch` as well (See what I mean by starting with _No knowlege at all?_). `throw` is *not* like `raise`. It just does it's namesake, takes a value, and throws it into the `catch`ers pitch, anything that is thrown gets handled. Like the following:
 
 ```elixir
@@ -121,13 +132,17 @@ tct = fn a,b ->
         v -> IO.puts "Is it even possible to get here?"
 end
 ```
-**Question** `#{v}`? Does it do what I think it does?
 
-**Answer** Yes. The braces take Elixir expression, evaluates, stringifies, and replaces the `#{}` with it. It's called *String Interpolation*.
+> **Question** `#{v}`? Does it do what I think it does?
+>
+> **Answer** Yes. The braces take Elixir expression, evaluates, stringifies, and replaces the `#{}` with it. It's called *String Interpolation*.
 
-**Question** What's with the `->` and the `when`?
+> **Question** What's with the `->` and the `when`?
+>
+> **Answer** Bare with me, I'll get there ~~tomorrow?~~ right after this. It's readable though, right?
 
-**Answer** Bare with me, I'll get there ~~tomorrow?~~ right after this. It's readable though, right?
+
+#### Rescuing a Function
 
 One thing we notice is, a lot of functions demand to be wrapped inside a `try`. And there's sugar for it too:
 
@@ -144,6 +159,8 @@ end
 ```
 So a named function can be an implicit `try` too.
 
+#### Summary
+
 Here's the takeaway:
 
 * `try` creates somewhat of a protected zone around your code. Any ~~Exception~~ errors occuring or `raise`d becomes a candidate for `rescue`.
@@ -154,13 +171,16 @@ Here's the takeaway:
 * `after` takes place regardless of whether the error was made
 * `else` takes place when no errors were raised or values were thrown. It also matches the value with a series of patterns just like `raise` and `catch`, it just takes on the good guys. (I had forgotten about it earlier and am too lazy to be showing an example now :()
 
+
+## Patterns and Guards
+
 Now, let's focus on the patterns we were talking about earlier. Patterns are one of the coolest things I liked about Elixir. It is actually quite simple, just take two parts, the left one will contain variables to be bound, wrapped in a pattern while the right side will be expression. Now, mentally superimpose the left on top of right. If they make one-to-one match, then you got your variables bound.
 
 Let's take an example here, `[1, 2, 3]` is a list, right? And what of `[x, y, z]`? A list too. But whether or not you will be slapped with a `CompilerError` or not is totally upto the context and declaration conditions of the variables. Now, what happens if you place `[1, 2, 3]` on top of `[x, y, z]`? You see, `1` will sit on top of `x`, `2` on `y`, and `3` on `z`. Bring the match operator in the mix and you have `[x, y, z] = [1, 2, 3]` binding `x`, `y`, and `z`, to `1`, `2`, and `3`. However, if we place `{x, y, z} = [1, 2, 3]` they won't really match, `{` will reject the `[` and we get our favorite `MatchError`, and neither would `[1, x] = [2, 6]` because 1 ain't 2. The pattern has to match completely. 
 
-**Question** What one earth is a `{1, 2, 3}`?
-
-**Answer** They're `tuples`. They are like `Lists`, but with different agenda and performance profile. Use them when you have a fixed number of elements. I'm sure I'll talk about them in a day or two. Moving on...
+> **Question** What one earth is a `{1, 2, 3}`?
+> 
+> **Answer** They're `tuples`. They are like `Lists`, but with different agenda and performance profile. Use them when you have a fixed number of elements. I'm sure I'll talk about them in a day or two. Moving on...
 
 So, let's do some pattern matching from whatever we know:
 
@@ -183,12 +203,17 @@ So, let's do some pattern matching from whatever we know:
 
 As I'm sure I've mentioned in *Day-0*, `%{x: 0, y: 0}` refers to a `Map`. A special case of it too because in here, keys are `Atom`s. If no keys were `Atom`s, we'd do a `%{"x" => 0, "y" => 0}` instead.
 
+
+#### Lists, Maps, Tuples
+
 I have briefly mentioned `List`, `Tuple` and `Map` without talking about it much, I know I will some day but here are some quickies:
 
 * `Atom`s are like constants where their name and value are the same.
 * `List`s can be written in the form `[1, 2, 3]`. However, they are recursively constructed. For example, `[0 | []]` is `[0,1]`, `[0 | [1 | []]]` is `[0, 1]` and so on. This construction is of the form `[h|t]` where `h` refers to the first element and `t` refers to the rest. This can be used as a pattern too.
 * `Map`s are written like `%{"a" => 10, "b" => 20}` but if all of its keys are atoms, then it can be of the type `%{a: 10, b: 20}`. Normally, maps are accessed via the indexing operator but in case of keyword maps, `.` operator can be used. `m = %{x: 0, y: 0}` can be accessed like either `m[:a]` or `m.a`. For keyword maps only.
 * A `List` whose elements are all tuples of two elements and the first of whom are atoms, then they are called keywords and have a special sugar as well. `[{:a, 2}, {:b, 3}]` can also be written as `[a: 2, b: 3]` and queried like `lst[:a]`.
+
+#### Functions and Patterns
 
 Back to patterns. And here's something interesting, function arguments are pattern-ready. Which means, if we define a function definition like `def f(0, 1, x)` and put `0, 1, 2` as the actual parameter, then the function will be activated and `x` will be bound with `2`. This eliminates a lot of conditions and logics and makes the program look declarative. Modules match all its definitions of the functions from top to bottom and gives out the first match. Here's an example:
 
@@ -213,9 +238,9 @@ defmodule Sort do
 end
 ```
 
-**Question** ++ what's that?
-
-**Answer** You concatenate two lists with the ++ function. Or the `++/2`
+> **Question** ++ what's that?
+> 
+> **Answer** You concatenate two lists with the ++ function. Or the `++/2`
 
 This is fun... let's write some more of these.
 
@@ -231,6 +256,8 @@ defmodule List do
     def filter(f, [h|t]), do: (if f.(h), do: [h], else: []) ++ filter(f, t)
 end
 ```
+
+#### And Guards
 
 Then there are guards. Guards are basically the `when` clauses that were mentioned in the `Exception` zone.
 
@@ -288,8 +315,10 @@ When I call `WeirdMath.division_even(10, 2)` it sends me a `FunctionClauseError`
 
 Now, if we go back to the error handling section, we would have an easier time understanding it and be more creative while handling errors. 
 
-Phew. That was a long post. And a fun one too. There's this one thing though, I made a mistake when writing my `BadMath.factorial/1` function and when I was calling it with `iex`, it froze my entire system. I didn't save the stuff I was writing at the time, so lost a lot of words.
+## PHEW
 
-**Question** What's this `macro` you talk about?
+That was a long post. And a fun one too. There's this one thing though, I made a mistake when writing my `BadMath.factorial/1` function and when I was calling it with `iex`, it froze my entire system. I didn't save the stuff I was writing at the time, so lost a lot of words.
 
-**Answer** Pure awesomeness. I can't wait to know Elixir's version of it. 
+> **Question** What's this `macro` you talk about?
+> 
+> **Answer** Pure awesomeness. I can't wait to know Elixir's version of it. 
