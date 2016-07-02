@@ -3,6 +3,12 @@ date = "2016-07-02T01:54:13+06:00"
 author = "Mafinar Khan"
 title = "Day 1 - Tabula Rasa"
 linktitle = "Day 1 - Tabula Rasa"
+tags = [
+    "basic",
+    "error-handling",
+    "pattern",
+    "guard"
+]
 weight = 10
 description = "I did enough exploration the past few days and it's time I clean slate and proceed as someone learning Elixir. Not a Python programmer trying to translate Python idioms into Elixir or a Clojure programmer's view of the language, but starting with a clean slate and learning from zero."
 +++
@@ -93,6 +99,7 @@ end
 ```
 
 **Question** What does the `<>` operator do?
+
 **Answer** That's Elixir string concatenation operator. (I felt kinda weird to me at first)
 
 When we either run the script or call `BadMath.play` from `iex` we get the error message and the ~~finally~~ `after` message. So I guess we can tell that `after` puts a piece of code that gets executed regardless whether you made an error or not.
@@ -115,9 +122,11 @@ tct = fn a,b ->
 end
 ```
 **Question** `#{v}`? Does it do what I think it does?
+
 **Answer** Yes. The braces take Elixir expression, evaluates, stringifies, and replaces the `#{}` with it. It's called *String Interpolation*.
 
 **Question** What's with the `->` and the `when`?
+
 **Answer** Bare with me, I'll get there ~~tomorrow?~~ right after this. It's readable though, right?
 
 One thing we notice is, a lot of functions demand to be wrapped inside a `try`. And there's sugar for it too:
@@ -145,3 +154,142 @@ Here's the takeaway:
 * `after` takes place regardless of whether the error was made
 * `else` takes place when no errors were raised or values were thrown. It also matches the value with a series of patterns just like `raise` and `catch`, it just takes on the good guys. (I had forgotten about it earlier and am too lazy to be showing an example now :()
 
+Now, let's focus on the patterns we were talking about earlier. Patterns are one of the coolest things I liked about Elixir. It is actually quite simple, just take two parts, the left one will contain variables to be bound, wrapped in a pattern while the right side will be expression. Now, mentally superimpose the left on top of right. If they make one-to-one match, then you got your variables bound.
+
+Let's take an example here, `[1, 2, 3]` is a list, right? And what of `[x, y, z]`? A list too. But whether or not you will be slapped with a `CompilerError` or not is totally upto the context and declaration conditions of the variables. Now, what happens if you place `[1, 2, 3]` on top of `[x, y, z]`? You see, `1` will sit on top of `x`, `2` on `y`, and `3` on `z`. Bring the match operator in the mix and you have `[x, y, z] = [1, 2, 3]` binding `x`, `y`, and `z`, to `1`, `2`, and `3`. However, if we place `{x, y, z} = [1, 2, 3]` they won't really match, `{` will reject the `[` and we get our favorite `MatchError`, and neither would `[1, x] = [2, 6]` because 1 ain't 2. The pattern has to match completely. 
+
+**Question** What one earth is a `{1, 2, 3}`?
+
+**Answer** They're `tuples`. They are like `Lists`, but with different agenda and performance profile. Use them when you have a fixed number of elements. I'm sure I'll talk about them in a day or two. Moving on...
+
+So, let's do some pattern matching from whatever we know:
+
+```elixir
+[a, 2, [c, d], 5] = [1, 2, [3, 4], 5]
+#[a, 2, [c, d], 5]
+#[1, 2, [3, 4], 5]
+# Variables on top, values on bottom, you tell me who's what?
+
+%{lat: lat, lng: lng} = %{lat: 23, lng: 90}
+#%{lat: lat, lng: lng}
+#%{lat: 23,  lng: 90}
+# You get the picture...
+
+{:circle, 10} = {:square, 10}
+#{:circle, 10}
+#{:square, 10}
+#:circle ain't :square... MatchError!!!
+```
+
+As I'm sure I've mentioned in *Day-0*, `%{x: 0, y: 0}` refers to a `Map`. A special case of it too because in here, keys are `Atom`s. If no keys were `Atom`s, we'd do a `%{"x" => 0, "y" => 0}` instead.
+
+I have briefly mentioned `List`, `Tuple` and `Map` without talking about it much, I know I will some day but here are some quickies:
+
+* `Atom`s are like constants where their name and value are the same.
+* `List`s can be written in the form `[1, 2, 3]`. However, they are recursively constructed. For example, `[0 | []]` is `[0,1]`, `[0 | [1 | []]]` is `[0, 1]` and so on. This construction is of the form `[h|t]` where `h` refers to the first element and `t` refers to the rest. This can be used as a pattern too.
+* `Map`s are written like `%{"a" => 10, "b" => 20}` but if all of its keys are atoms, then it can be of the type `%{a: 10, b: 20}`. Normally, maps are accessed via the indexing operator but in case of keyword maps, `.` operator can be used. `m = %{x: 0, y: 0}` can be accessed like either `m[:a]` or `m.a`. For keyword maps only.
+* A `List` whose elements are all tuples of two elements and the first of whom are atoms, then they are called keywords and have a special sugar as well. `[{:a, 2}, {:b, 3}]` can also be written as `[a: 2, b: 3]` and queried like `lst[:a]`.
+
+Back to patterns. And here's something interesting, function arguments are pattern-ready. Which means, if we define a function definition like `def f(0, 1, x)` and put `0, 1, 2` as the actual parameter, then the function will be activated and `x` will be bound with `2`. This eliminates a lot of conditions and logics and makes the program look declarative. Modules match all its definitions of the functions from top to bottom and gives out the first match. Here's an example:
+
+```elixir
+defmodule BadMath do
+    def factorial(0), do: 1
+    def factorial(n), do: n * factorial(n-1)
+end
+```
+
+In the snippet above, when we call `BadMath.factorial(4)`, then it first matches with `factorial(0)` signature, it doesn't find it, so it matches the second one. This stops when `n` is finally 0 due to the decrements and first one (non-recursive) is matched.
+
+Here's one with the head rest pattern.
+
+```elixir
+defmodule Sort do
+    def quicksort([]), do: []
+    def quicksort([h|t]) do
+        center = (for x <- t, x == h, do: x) ++ [h]
+        quicksort(for x <- t, x < h, do: x) ++ center ++ quicksort(for x <- t, x > h, do: x) 
+    end
+end
+```
+
+**Question** ++ what's that?
+
+**Answer** You concatenate two lists with the ++ function. Or the `++/2`
+
+This is fun... let's write some more of these.
+
+```elixir
+defmodule List do
+    def len([]), do: 0
+    def len([h|t]), do: 1 + len(t)
+
+    def map(f, []), do: []
+    def map(f, [h|t]), do: [f.(h)] ++ map(f, t)
+
+    def filter(f, []), do: []
+    def filter(f, [h|t]), do: (if f.(h), do: [h], else: []) ++ filter(f, t)
+end
+```
+
+Then there are guards. Guards are basically the `when` clauses that were mentioned in the `Exception` zone.
+
+Guards guard the patterns, it starts with `when` and is followed by a condition expression. Functions can be called too but the functions guards allow is very limited and user-custom functions cannot be used.
+
+```elixir
+defmodule Grade do
+    def show(n) when n <= 100 and n >= 90, do: "A"
+    def show(n) when n < 90 and n > 80, do: "B"
+    def show(n) when n < 80 and n >= 70, do: "C"
+    def show(n) when n < 70 and n >= 60, do: "D"
+    def show(n) when n < 60 and n >= 0, do: "F"
+    def show(_), do: "What were they smoking?"
+end
+```
+
+This brings us to the `case` macro. The `case` macro takes an expression and matches it with a set of patterns. The grade above could be `case`d like:
+
+```elixir
+pass_or_fail = fn marks ->
+    case marks do
+        m when m < 33 -> :fail
+        m when m >= 33 -> :pass
+        m when m > 100 or m < 0 -> :wrong
+    end
+end
+```
+
+See when we call the function above, the `:wrong` never appears. This is because when we assign an impossible value like `-10` or `110`, then they get matched with the top two clauses, hence the last clause is never met. We should either put the final clause on top, or add a high/low value checking bound in the `when` clauses. 
+
+Similar is `cond` macro. Instead of taking a value and matching a set of patterns, it dictates a set of conditions and expression that's associated with them.
+
+```elixir
+pass_or_fail = fn marks ->
+    cond do
+        marks <= 100 and marks >= 33 -> :pass
+        marks >= 0 and marks < 33 -> :fail
+        :else -> :wrong
+    end
+end
+```
+
+That's with the guards. There are a few things though:
+
+* Guards know limited functions. Not all functions can be used in guards, no matter how boolean they are. 
+* Guards don't throw exceptions. I had understood it the hard way. The following piece of code, for example:
+```elixir
+defmodule WeirdMath do
+    def division_even(a, 0), do: raise ArithmeticError, "Division by zero"
+    def division_even(a, b) when rem(a/b, 2) == 1, do: false
+    def division_even(a, b) when rem(a/b, 2) == 0, do: true
+end
+```
+When I call `WeirdMath.division_even(10, 2)` it sends me a `FunctionClauseError`, saying, there's no function clause that matches it. Then when I separately do a `rem(10, 2)` then I get an `ArithmeticError` that tells me I have bad argument in my expression. This didn't get handled in the guard.
+
+Now, if we go back to the error handling section, we would have an easier time understanding it and be more creative while handling errors. 
+
+Phew. That was a long post. And a fun one too. There's this one thing though, I made a mistake when writing my `BadMath.factorial/1` function and when I was calling it with `iex`, it froze my entire system. I didn't save the stuff I was writing at the time, so lost a lot of words.
+
+**Question** What's this `macro` you talk about?
+
+**Answer** Pure awesomeness. I can't wait to know Elixir's version of it. 
