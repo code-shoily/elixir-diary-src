@@ -1,8 +1,8 @@
 +++
 date = "2016-07-02T01:54:13+06:00"
 author = "Mafinar Khan"
-title = "Day 1 - Tabula Rasa: Patterns and Errors"
-linktitle = "Day 1 - Tabula Rasa: Patterns and Erros"
+title = "Day 1 - Tabula Rasa"
+linktitle = "Day 1 - Tabula Rasa"
 tags = [
     "basic",
     "error-handling",
