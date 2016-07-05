@@ -119,6 +119,7 @@ When we either run the script or call `BadMath.play` from `iex` we get the error
 How do you ~~throw~~ `raise` an exception? The `raise` macro, of course. Just put `raise` with the ErrorName as the first argument and message as the second. Call it from within `try`-s scope and it'll ~~catch~~ `rescue` it.
 
 #### throw and catch
+
 ~~Speaking of striking out things,~~ looks like Elixir has `throw` and `catch` as well (See what I mean by starting with _No knowlege at all?_). `throw` is *not* like `raise`. It just does it's namesake, takes a value, and throws it into the `catch`ers pitch, anything that is thrown gets handled. Like the following:
 
 ```elixir
