@@ -4,10 +4,10 @@ author = "Mafinar Khan"
 title = "Day 2 - Diving in..."
 linktitle = "Day 2 - Diving In..."
 tags = [
-    "data-structure",
+    "enum",
     "list",
     "tuple",
-    "map",
+    "set"
     "comprehension",
 ]
 weight = 10
@@ -102,8 +102,9 @@ The `|>` is a super fun operator. It's work is simple, you take an expression, a
 
 I have used `import`s so that I get saved from repetitively typing `Enum.map`, or `:math.sin`. I will look more into these later.
 
-The `&` preceding what should've been a function body does exactly that. Expresses the function body. In `Elixir`, `f`, if not a variable, means call to the `f` function. So, had we written `map(list, List.to_tuple)`, the Elixir will attempt to call the `List.to_tuple/0` function, for which Elixir didn't define any. Also, it is important to mention the arity as well otherwise the compiler will get confused.
-  
+The `&` preceding what should've been a function body does exactly that. Expresses the function body. In `Elixir`, `f`, if not a variable, means call to the `f` function. So, had we written `map(list, List.to_tuple)`, the Elixir will attempt to call the `List.to_tuple/0` function, for which Elixir didn't define any. Also, it is important to mention the arity as well otherwise the compiler will get confused.  
+
+So we see that, (Linked)Lists of Elixir are recursively defined in a head/tail format and are best suited for data that require prepending growth. They can be heterogenous or homogenous. They are iterable via the `Enum` module are promote immutable attitude. Through combinations of `Enum` functions, we can traverse, project, filter or commit reductions on lists and the pipe operator does a beautiful job of keeping code readable, fluid, and concise.
 
 ### Keyword Lists
 
@@ -117,10 +118,67 @@ defmodule StrippedKW do
         {:info, "#{name} - #{id}"}
     end
 end
-```
+
 # And when calling...
 StrippedKW.example name: name, id: id
+```
+The sugar of omitting the `[` and `]` allows us to create fluent and beautiful APIs. For example, we can do stuff like:
 
+```elixir 
+Assets.all(  
+  from vehicle in Assets.Vehicles,
+      where: vehicle.truck? == true,
+  select: vehicle
+)
+```
 
-### Maps
+Omission of parentheses or brackets make a set of function call seem like a totally new language.
+
+### Sets
+
+Set datastructure is similar to that of mathematics. And is defined with the `%MapSet{}` construct. For example `%MapSet{1, 2, 3}` is equivalent of the mathematical `{1, 2, 3}`. All set operations such as `MapSet.union/2`, `MapSet.intersection/2`, `MapSet.difference/2` etc are defined under the `MapSet` module along with predicates such as `MapSet.member?/2`, `MapSet.disjoint?/2`. We create a new `MapSet` via the `MapSet.new/1` function.
+
+```elixir
+u = MapSet.new [1, 2, 3, 4, 5, 6]
+a = MapSet.new [1, 3, 5]
+b = MapSet.new [2, 4, 6]
+c = MapSet.new [3, 6, 9]
+
+MapSet.union a, b # {1, 2, 3, 4, 5, 6}
+MapSet.intersection a, c # {3}
+Mapset.member? a, 3 # true 
+```
+
+We can leverage the `Enum` functions on MapSets as well.
+
 ### Comprehensions
+
+List comprehension is one of my favorite language features and I'm glad Elixir does it smoothly. It is quite close to the mathematical treatment of it too. For example, if we want to find all numbers that are between `1` and `100` and are divisible by 3 or 5, we can write: `for i <- 1..100, rem(i, 3) == 0 || rem(i, 5) == 0, do: i`, or, if we want to find all Pythagorean triples with sides below 10: `for i <- 1..10, j <- 1..i, k <- 1..j, i*i == j*j + k*k, do: {i, j, k}`. The comprehension syntax is simple: `for` starts the expression, which is followed by several comma separated expressions, which can either be iterations, depicted by the `<-` operator, or conditions which are, well, condition expressions. Finally, the `do:` clause allows the yielded expression to give out.
+
+What if we want to do a comprehension but yield the result into a different structure? For example, we iterate through a list and want to return a set? The `into:` is there for this (I will have to read more on this). `for i <- [1, 1, 5, 7, 8, 8, 16, 32, 32], into: %MapSet{}, do: i*i` does the trick!
+
+### Playing on...
+
+The `Enum` contains a good load of function to play with iterable structures. All I need to do is push `Enum.` and then the `<TAB>` button to see the list of possibilities and `h Enum.<function>` to see what it does in the `iex`. The documentation is fantastic and it's a piece of cake to know which function does what. The `|>` operator can compose multiple expressions and still be readable and feel fluent. This is especially due to the consistancy of first argument being the structure that the pipe operator can function. Some of the functions here reside in `Kernel` instead of their respective modules, which I need to dig further to grok the reason why.
+
+Let's play a little more with `Enum`s (Will write the first few minutes' ones here)
+
+```elixir
+[10, 34, 32, 12, 11, 19, 20] # Le list 
+    |> Enum.with_index # Get indexed tuple at {value, index} formation 
+    |> Enum.filter(fn {v, idx} -> rem(idx, 2) == 1 end) # Find odd-indexed tuples
+    |> Enum.map(fn {v, idx} -> v end) # Extract the values as value-list
+    |> Enum.reduce(1, &*/2) # Multiply all the things
+
+1..1000 # 1 to one thousand
+    |> Enum.take_random(10) # Take any random 10 element 
+    |> Enum.find(-1, fn v -> rem(v, 13) == 0) # Pluck ones whom 13 divides or -1
+
+1..100 |> Enum.scan(&+/2) # Like reduce, but all intermediate results are enlisted!
+
+# split_while, uniq, sort_by, zip, intersperse... my my!
+```
+
+> Wow!
+
+Tomorrow I'll be playing with `Map` and `Stream`, and do some more `Enum` tricks, which I'm finding to be superfun! It's Eid festival today and I'm wishing everyone a great day!
