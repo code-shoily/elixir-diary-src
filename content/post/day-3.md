@@ -11,7 +11,8 @@ description = "OMG It's over six months and I'm at day 3! Let's mix in some tool
 +++
 
 ## Hello Again
-The past six month's been hectic at work and it's a pity I had little time for Elixir. Now this may not be the case anymore since I'm planning on hijacking some of Elixir greatness into my work mix.
+The past six month's been hectic at work and it's a pity I had little time for Elixir. And now version `1.4` is out, shame on me. 
+This may not be the case anymore since I'm planning on hijacking some of Elixir greatness to my work mix.
 
 And that's what I'm starting off after the hiatus... `Mix`
 
@@ -86,6 +87,41 @@ First it's the omnipresent `defmodule` *powered by* `use Mix.Project`. It pimps 
 * **project** - I hold all the meta-information about what you're going to make. I decide how things get build, what `Elixir` you use, how to run things basically.
 * **application** - I ensure what libraries need to get compiled before you compile your own?
 * **deps** - I manage dependancies, and I'm private!
+
+I think other than the `version` part, I should leave the `application` segment alone, for now. Let's play with time a little, there's a lib for that: [Timex](https://github.com/bitwalker/timex)
+
+Common sense tells me to add a dependancy as a map, and it was correct, so let's add `{:timex, "~> 3.0"}` to our dependancy list so that it looks like:
+
+```
+  defp deps do
+    [{:timex, "~> 3.0"}]
+  end
+```
+
+I learnt more about versioning [from here](https://hexdocs.pm/elixir/Version.html). Well I would blindly copy the recommended line from the libraries for the time being any way. The comment in `mix.exs` code was kind enough to let me know of other possibilities (i.e. from git?). Thanks guys.
+
+`mix deps.get` is the `npm install` of `Mix` it seems. Just did that and I intend to play with it in the REPL now. `iex -S mix` did the trick (`python manage.py shell` anyone?).
+
+One thing I have seen is that I did not have to put anything in the `application` section of my Mix module, and it looked different from other `mix.exs`-es that I have seen, luckily I stumbled upon [this](https://sergiotapia.me/application-inference-in-elixir-1-4-ae9e43e90301#.mu8plww6p) which explained the reason and the application inference is really cool (although I have never lived a life before it). 
+
+If I do a single `iex`, then I cannot get all the `deps` goodness I mentioned to `Mix`, the `-S mix` takes care of that and gives me an environment where `Time<TAB>` would autocomplete to `Timex`. So I can play with it straight away. Let's write something in `lib/hello_mix.ex`:
+
+```
+defmodule HelloMix do
+  @moduledoc """
+  Documentation for HelloMix.
+  """
+
+  @doc """
+  Returns the ISO:Extended format of current time.
+  """
+  def now do
+    {_, right_now} = Timex.format Timex.now(), "{ISO:Extended}"
+    right_now
+  end
+end
+```
+
 
 
 
