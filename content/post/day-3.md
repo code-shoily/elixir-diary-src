@@ -1,10 +1,12 @@
 +++
 author = "Mafinar Khan"
-date = "2017-01-16T14:14:07+06:00"
+date = "2017-01-16T23:14:07+06:00"
 title = "Day 3 - Mix"
 linktitle = "Day 3 - Mix"
 tags = [
-    "mix"
+    "mix",
+    "tooling",
+    "task"
 ]
 weight = 10
 description = "OMG It's over six months and I'm at day 3! Let's mix in some tooling today"
@@ -121,6 +123,73 @@ defmodule HelloMix do
   end
 end
 ```
+
+Now if we `iex -S mix` and type in `HelloMix.now()`, we'll see a formatted string of time.
+
+# Aliases, Tasks
+
+`mix compile`, as the name says, compiles your project, but what if I needed `mix c`? Aliases to the rescue...
+
+```
+defp aliases do
+ [c: "compile"]
+end
+```
+
+And then add `aliases: aliases()` to the project vector.
+
+Aliases can also have functions defined within the module and work as task, so if, we say, have a `hello` function, it can run it out with `mix hello`. The function would be `defp hello(_), do: IO.puts "Hello"`. The first parameter is a list of arguments provided, so if we want to know about the arguments, we can go like:
+
+```
+# Note to self, DO UPDATE the `project` with the `aliases`
+defp aliases do
+  [c: "compile",
+   hello: &hello/1,
+   concat: &contact/1]
+end
+
+defp concat(args) do
+  args 
+    |> Enum.reduce(&<>/2)
+    |> String.reverser
+    |> IO.puts
+end
+```
+
+The way of running tasks defined here is more likely to stay `private` to the app I am using, since the definitions all go into my own `mix.exs`. We can make usable by other project task by simple creating a module that `uses` the `Mix.Task` behaviour. Such as the one below: (I saved it in and as `lib/tasks/concat.ex`)
+
+```
+defmodule Mix.Tasks.Concat do
+  use Mix.Task
+
+  def run(args) do
+    args 
+      |> Enum.reduce(&<>/2)
+      |> String.reverse
+      |> IO.puts
+  end
+end
+```
+
+If we run `mix concat hello world` now, it would call the `defp` version of `mix.exs`, so let's remove it and run it again and we see a `helloworld` nicely printed out.
+
+In the examples, they used `mix.shell.info` in lieu of `IO.puts` by the way :)
+
+## I'll be back
+
+There is more to (in fact way more to it seems, what I wrote is nothing) `Mix` than I brushed in here. The excellent documentation [here](https://hexdocs.pm/mix/Mix.html) speaks volumes of it. You can play with environments, tests (all it takes is `mix test`, and OMG `Elixir` has `doctests`, next time!), more control in each of the parts of the module. But I guess from what I just practiced thus far should suffice in me trying to act like I can make projects now with Elixir. 
+
+There are a few things though which at this point I am too lazy to google for:
+
+* Is there any `mix init` that generates a mix project? (I know it's easy to make one)
+* What about `mix install --save` akin to the one JS folks to? (i.e. gets me latest version of `Timex` and updates my `mix.exs` file?)
+
+I guess I could do those too, however, it's pleasant knowing `Mix`. I will try to be regular for a change and concentrate a lot more on `Elixir` than I did last year.
+
+
+
+
+
 
 
 
