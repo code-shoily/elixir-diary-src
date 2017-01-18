@@ -3,6 +3,8 @@ author = "Mafinar Khan"
 date = "2017-01-16T23:14:07+06:00"
 title = "Day 3 - Mix"
 linktitle = "Day 3 - Mix"
+next = "/"
+prev = "/"
 tags = [
     "mix",
     "tooling",
@@ -92,7 +94,7 @@ First it's the omnipresent `defmodule` *powered by* `use Mix.Project`. It pimps 
 
 I think other than the `version` part, I should leave the `application` segment alone, for now. Let's play with time a little, there's a lib for that: [Timex](https://github.com/bitwalker/timex)
 
-Common sense tells me to add a dependancy as a map, and it was correct, so let's add `{:timex, "~> 3.0"}` to our dependancy list so that it looks like:
+~~Common sense tells me to add a dependancy as a map, and it was correct~~ (erm, no it was not, we're not in Clojure anymore, use `Tuple`), so let's add `{:timex, "~> 3.0"}` to our dependancy list so that it looks like:
 
 ```
   defp deps do
@@ -126,7 +128,7 @@ end
 
 Now if we `iex -S mix` and type in `HelloMix.now()`, we'll see a formatted string of time.
 
-# Aliases, Tasks
+## Aliases, Tasks
 
 `mix compile`, as the name says, compiles your project, but what if I needed `mix c`? Aliases to the rescue...
 

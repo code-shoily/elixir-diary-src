@@ -312,7 +312,7 @@ Guards don't throw exceptions. I had understood it the hard way. The following p
 
 ```elixir
 defmodule WeirdMath do
-    def division_even(a, 0), do: raise ArithmeticError, "Division by zero"
+    # def division_even(a, 0), do: raise ArithmeticError, "Division by zero"
     def division_even(a, b) when rem(a/b, 2) == 1, do: false
     def division_even(a, b) when rem(a/b, 2) == 0, do: true
 end
